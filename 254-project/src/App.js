@@ -15,7 +15,6 @@ const theme = createTheme({
 
 function App() {
   const [weatherData, setWeatherData] = useState(null);
-  const [city, setCity] = useState('Fullerton');
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -37,7 +36,6 @@ function App() {
         console.log("Temp: " + response.data.current.temp_f + "°F");
         console.log("Local time: " + moment(response.data.location.localtime).format('MMMM Do YYYY, h:mm a'));
         setWeatherData(response.data);
-        setCity(cityName); // Update city state with the entered city name
       })
       .catch((error) => {
         console.error('Error fetching data:', error);
@@ -45,54 +43,18 @@ function App() {
       });
   };
 
-  const renderWeatherInfo = () => {
-    if (!weatherData) return null;
-
-    return (
-      <div>
-        <h2>Weather Information</h2>
-        <TableContainer component={Paper}>
-          <Table sx={{ minWidth: 650 }}>
-            <TableHead>
-              <TableRow>
-                <TableCell>Location</TableCell>
-                <TableCell>Region</TableCell>
-                <TableCell>Country</TableCell>
-                <TableCell>Temperature (°F)</TableCell>
-                <TableCell>Local Time</TableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              <TableRow>
-                <TableCell>{weatherData.location.name}</TableCell>
-                <TableCell>{weatherData.location.region}</TableCell>
-                <TableCell>{weatherData.location.country}</TableCell>
-                <TableCell>{weatherData.current.temp_f}</TableCell>
-                <TableCell>{moment(weatherData.location.localtime).format('MMMM Do YYYY, h:mm a')}</TableCell>
-              </TableRow>
-            </TableBody>
-          </Table>
-        </TableContainer>
-      </div>
-    );
-  };
-
   return (
-    <ThemeProvider theme={theme}>
-      <div className="App">
-        <header className="App-header">
-          <h1>CPSC 254 Project</h1>
+    <div className="App">
+      <header className="App-header">
+        <h1>CPSC 254 Project</h1>
 
-          <form onSubmit={handleSubmit}>
-            <input placeholder='Fullerton' name='City' defaultValue='Fullerton' />
-            <button type='Submit'>Get Weather</button>
-          </form>
+        <form onSubmit={handleSubmit}>
+          <input placeholder='Fullerton' name='City' defaultValue='Fullerton' />
+          <button type='Submit'>Get Weather</button>
+        </form>
 
-          {renderWeatherInfo()}
-
-        </header>
-      </div>
-    </ThemeProvider>
+      </header>
+    </div>
   );
 }
 
