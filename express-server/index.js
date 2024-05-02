@@ -41,7 +41,7 @@ app.post('/show', (req, res) => {
   // Replace with the actual SQL query
   var results = "";
   {db.query("USE weatherdb");
-  db.query("SELECT * FROM weather", function (err, result, fields) {
+  db.query("SELECT * FROM Weather", function (err, result, fields) {
   	if (err) throw err;
   	results = fields;
   	results += "\n" + result;
@@ -63,7 +63,7 @@ app.post('/add', (req, res) => {
 
   // Replace with the actual SQL query
   {db.query("USE weatherdb");
-  db.query("INSERT INTO weather (Location, Temperature, Date) VALUES ("+location+", "+temp+", "+date+")");
+  db.query("INSERT INTO Weather (Location, Temperature, Date) VALUES (\'"+location+"\', \'"+temp+"\', \'"+date+"\')");
   }
 });
 
