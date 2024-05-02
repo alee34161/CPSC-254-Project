@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-//const mysql = require('mysql');
+const mysql = require('mysql');
 
 app.use(bodyParser.urlencoded({extended: false}));
 app.use(bodyParser.json());
@@ -9,30 +9,46 @@ app.use(bodyParser.json());
 var cors = require('cors');
 app.use(cors());
 
-{/*}
-var db  = mysql.createPool({
-  connectionLimit : 10,
-  host            : 'localhost',
-  user            : 'admin',
-  password        : 'pass',
-  database        : 'weather_app'
+{var db = mysql.createConnection({
+	host: "localhost",
+	user: "root",
+	password: ""
 });
-*/}
+
+db.connect(function(err) {
+	if (err) throw err;
+	//console.log("It's connecting");
+	db.query("CREATE DATABASE IF NOT EXISTS weatherdb", function (err, result) {
+		if (err) throw err;
+		//console.log("Database created");
+	db.query("USE weatherdb", function (err, result) {
+		if (err) throw err;
+		//console.log("using correct database for now");
+	});
+	db.query("CREATE TABLE IF NOT EXISTS Weather (Location VARCHAR(150), Temperature VARCHAR(150), Date VARCHAR(150))", function (err, result) {
+		if (err) throw err;
+		//console.log("made a table using database hopefully");
+	});
+	});
+});
+
+
+}
 
 // Run when app posts to localhost:8080/show
 app.post('/show', (req, res) => {
 
   // Replace with the actual SQL query
-  {/*db.query('SELECT * FROM weather', (err, rows) => {
-    if(err) {
-      console.log(err);
-    } else {
-      res.send(rows);
-    }
+  var results = "";
+  {db.query("USE weatherdb");
+  db.query("SELECT * FROM weather", function (err, result, fields) {
+  	if (err) throw err;
+  	results = fields;
+  	results += "\n" + result;
   });
-*/}
+}
 
-  res.send("table of calls goes here, from server :)");
+  res.send(results);
 
 });
 
@@ -46,14 +62,9 @@ app.post('/add', (req, res) => {
   console.log("to be added to db:\n" + location + "\n" + temp + "\n" + date);
 
   // Replace with the actual SQL query
-  {/*db.query('INSERT INTO weather (location, temp, time) VALUES (?, ?, ?)', [location, temp, time], (err, rows) => {
-    if(err) {
-      console.log(err);
-    } else {
-      res.send(rows);
-    }
-  });
-*/}
+  {db.query("USE weatherdb");
+  db.query("INSERT INTO weather (Location, Temperature, Date) VALUES ("+location+", "+temp+", "+date+")");
+  }
 });
 
 
