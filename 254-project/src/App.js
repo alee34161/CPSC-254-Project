@@ -1,10 +1,21 @@
-import './App.css';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import moment from 'moment';
+import { DataGrid } from '@mui/x-data-grid';
+import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+import './App.css';
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 const weatherKey = '01d6a2b501df4c29a61224906242304';
 
 function App() {
+  const [weatherData, setWeatherData] = useState([]);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -27,14 +38,10 @@ function App() {
         const temp = response.data.current.temp_f + "°F";
         const date = moment(response.data.location.localtime).format('MMMM Do YYYY, h:mm a');
 
-        //console.log("Location: " + response.data.location.name + ", " + response.data.location.region + ", " + response.data.location.country)
-        //console.log("Temp: " + response.data.current.temp_f + "°F");
-        //console.log("Local time: " + moment(response.data.location.localtime).format('MMMM Do YYYY, h:mm a'));
-
         axios.post('http://localhost:8080/add', {location: location, temp: temp, date: date});
         axios.post('http://localhost:8080/show')
         .then((response) => {
-          console.log("show response: " + response.data);
+          setWeatherData(response.data);
         })
       })
       .catch((error) => {
@@ -53,6 +60,21 @@ function App() {
         </form>
 
       </header>
+      <ThemeProvider theme={darkTheme}>
+        <div style={{ height: 400, width: '100%' }}>
+          <DataGrid
+            rows={weatherData.map((row, index) => ({ id: index, ...row }))}
+            columns={[
+              { field: 'id', headerName: 'ID', width: 70 },
+              { field: 'Location', headerName: 'Location', width: 200 },
+              { field: 'Temperature', headerName: 'Temperature', width: 150 },
+              { field: 'Date', headerName: 'Date', width: 200 },
+            ]}
+            pageSize={5}
+            rowsPerPageOptions={[5, 10, 20]}
+          />
+        </div>
+      </ThemeProvider>
     </div>
   );
 }
