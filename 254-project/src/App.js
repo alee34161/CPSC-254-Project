@@ -47,7 +47,10 @@ function App() {
         const temp = response.data.current.temp_f + "°F";
         const date = moment(response.data.location.localtime).format('MMMM Do YYYY, h:mm a');
 
-        axios.post('http://localhost:8080/add', {location: location, temp: temp, date: date});
+        axios.post('http://localhost:8080/add', {location: location, temp: temp, date: date})
+        .then((response) => {
+          console.log(response);
+        })
         axios.post('http://localhost:8080/show')
         .then((response) => {
           setWeatherData(response.data);
