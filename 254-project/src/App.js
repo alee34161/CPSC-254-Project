@@ -1,10 +1,21 @@
 import './App.css';
 import axios from 'axios';
 import moment from 'moment';
+import React, { useState, useEffect } from 'react';
+import { DataGrid } from '@mui/x-data-grid';
+import { createTheme, ThemeProvider } from '@mui/material/styles'
+
+const darkTheme = createTheme({
+  palette: {
+    mode: 'dark',
+  },
+});
 
 const weatherKey = '01d6a2b501df4c29a61224906242304';
 
 function App() {
+
+  const [weatherData, setWeatherData] = useState([]);
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -33,8 +44,8 @@ function App() {
 
         axios.post('http://localhost:8080/add', {location: location, temp: temp, date: date});
         axios.post('http://localhost:8080/show')
-        .then((data) => {
-          console.log("show response: " + data.data);
+        .then((response) => {
+          setWeatherData(response.data);
         })
       })
       .catch((error) => {

@@ -51,7 +51,7 @@ app.post('/show', (req, res) => {
 
 	console.log("Results:");
 	results.forEach(result=> {
-		console.log(result.name);
+		console.log(result.Location, result.Temperature, result.Date);
 	});
 
 	res.json(results)
