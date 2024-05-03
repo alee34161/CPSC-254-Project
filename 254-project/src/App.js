@@ -33,8 +33,8 @@ function App() {
 
         axios.post('http://localhost:8080/add', {location: location, temp: temp, date: date});
         axios.post('http://localhost:8080/show')
-        .then((response) => {
-          console.log("show response: " + response.data);
+        .then((data) => {
+          console.log("show response: " + data.data);
         })
       })
       .catch((error) => {

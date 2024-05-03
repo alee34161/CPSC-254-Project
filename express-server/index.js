@@ -39,16 +39,29 @@ db.connect(function(err) {
 app.post('/show', (req, res) => {
 
   // Replace with the actual SQL query
-  var results = "";
+  //var results = "";
   {db.query("USE weatherdb");
-  db.query("SELECT * FROM Weather", function (err, result, fields) {
+  db.query("SELECT * FROM Weather", function (err, results, fields) {
   	if (err) throw err;
-  	results = fields;
-  	results += "\n" + result;
-  });
-}
 
-  res.send(results);
+	console.log("Fields:");
+	fields.forEach(field => {
+		console.log(field.name);
+	});
+
+	console.log("Results:");
+	results.forEach(result=> {
+		console.log(result.name);
+	});
+
+	res.json(results)
+
+  });
+  }
+
+  //console.log("Results: " + toString(results));
+
+  //res.send("test from /show")
 
 });
 
@@ -59,7 +72,7 @@ app.post('/add', (req, res) => {
   const temp = req.body.temp;
   const date = req.body.date;
 
-  console.log("to be added to db:\n" + location + "\n" + temp + "\n" + date);
+  //console.log("to be added to db:\n" + location + "\n" + temp + "\n" + date);
 
   // Replace with the actual SQL query
   {db.query("USE weatherdb");
