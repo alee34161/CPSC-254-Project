@@ -37,7 +37,7 @@ function App() {
             <Button
                 variant="contained"
                 size="small"
-                style={{ marginLeft: 16, backgroundColor: "#FF5733" }}
+                style={{backgroundColor: "#FF5733" }}
                 onClick={() => {
                   const currentRow = params.row.id;
                   axios.post('http://localhost:8080/delete', {id: currentRow})
@@ -55,28 +55,14 @@ function App() {
     )
   }
 
-  const rendeClearButton = (params) => {
-    return (
-        <strong>
-            <Button
-                variant="contained"
-                size="small"
-                style={{ marginLeft: 16, backgroundColor: "#FF5733" }}
-                onClick={() => {
-                  const currentRow = params.row.id;
-                  axios.post('http://localhost:8080/clear')
-                  .then((response) => {
-                    axios.post('http://localhost:8080/show')
-                    .then((response) => {
-                      setWeatherData(response.data);
-                    })
-                  })
-                }}
-            >
-                Clear Entries
-            </Button>
-        </strong>
-    )
+  const onClearClick = () => {
+    axios.post('http://localhost:8080/clear')
+    .then((response) => {
+      axios.post('http://localhost:8080/show')
+      .then((response) => {
+        setWeatherData(response.data);
+      })
+    })
   }
 
   const handleSubmit = e => {
@@ -136,7 +122,21 @@ function App() {
         </Stack>
 
         <div style={{padding: 10}}>
-          renderClearButton
+        <strong>
+            <Button
+                variant="contained"
+                size="small"
+                style={{ marginLeft: 16, backgroundColor: "#FF5733" }}
+                onClick={() => {
+                  onClearClick()
+                  setWeatherTemp("")
+                  setWeatherLocation("")
+                  setWeatherDate("")
+                }}
+            >
+                Clear Entries
+            </Button>
+        </strong>
         </div>
   
         <ThemeProvider theme={darkTheme}>
