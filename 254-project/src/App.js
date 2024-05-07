@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from 'react';
+
+// Library Imports
 import axios from 'axios';
 import moment from 'moment';
+
+// Material UI Imports
 import { DataGrid } from '@mui/x-data-grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import './App.css';
 
+// Theme for table
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -16,10 +21,14 @@ const darkTheme = createTheme({
 const weatherKey = '01d6a2b501df4c29a61224906242304';
 
 function App() {
+
+  // State variable for table data
+  const [weatherData, setWeatherData] = useState([]);
+
+  // State variables for current request
   const [weatherTemp, setWeatherTemp] = useState([]);
   const [weatherLocation, setWeatherLocation] = useState([]);
   const [weatherDate, setWeatherDate] = useState([]);
-  const [weatherData, setWeatherData] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:8080/show')
@@ -31,6 +40,7 @@ function App() {
       });
   }, []);
 
+  // Render delete button in table cells
   const renderDeleteButton = (params) => {
     return (
         <strong>
@@ -55,6 +65,7 @@ function App() {
     )
   }
 
+  // Clear table entries
   const onClearClick = () => {
     axios.post('http://localhost:8080/clear')
     .then((response) => {
@@ -65,6 +76,7 @@ function App() {
     })
   }
 
+  // Submit button handler
   const handleSubmit = e => {
     e.preventDefault();
 
@@ -106,8 +118,18 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+
+        {/*App Title*/}
         <h1>Simple Weather App</h1>
 
+        {/*Requested Weather Info*/}
+        <Stack spacing={1}>
+            <h3>{weatherTemp}</h3>
+            <p>{weatherLocation}</p>
+            <p>{weatherDate}</p>
+        </Stack>
+
+        {/*City name text entry*/}
         <div style={{padding: 10}}>
         <form onSubmit={handleSubmit}>
           <input placeholder='Fullerton' name='City' defaultValue='Fullerton' />
@@ -115,12 +137,7 @@ function App() {
         </form>
         </div>
 
-        <Stack spacing={1}>
-            <h3>{weatherTemp}</h3>
-            <p>{weatherLocation}</p>
-            <p>{weatherDate}</p>
-        </Stack>
-
+        {/*Clear Entries Button*/}
         <div style={{padding: 10}}>
         <strong>
             <Button
@@ -138,7 +155,10 @@ function App() {
             </Button>
         </strong>
         </div>
+
+        <h3>History</h3>
   
+        {/*Weather Request History Table*/}
         <ThemeProvider theme={darkTheme}>
           <div style={{ height: 300, width: '70%', padding: 10 }}>
             <DataGrid
