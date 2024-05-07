@@ -3,6 +3,7 @@ import axios from 'axios';
 import moment from 'moment';
 import { DataGrid } from '@mui/x-data-grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import Stack from '@mui/material/Stack'
 import './App.css';
 
 const darkTheme = createTheme({
@@ -14,6 +15,10 @@ const darkTheme = createTheme({
 const weatherKey = '01d6a2b501df4c29a61224906242304';
 
 function App() {
+  const [weatherTemp, setWeatherTemp] = useState([]);
+  const [weatherLocation, setWeatherLocation] = useState([]);
+  const [weatherDate, setWeatherDate] = useState([]);
+
   const [weatherData, setWeatherData] = useState([]);
 
   useEffect(() => {
@@ -54,6 +59,9 @@ function App() {
         axios.post('http://localhost:8080/show')
         .then((response) => {
           setWeatherData(response.data);
+          setWeatherTemp(temp);
+          setWeatherLocation(location);
+          setWeatherDate(date);
         })
       })
       .catch((error) => {
@@ -64,17 +72,21 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
-        <h1>CPSC 254 Project</h1>
+        <h1>Simple Weather App</h1>
 
         <form onSubmit={handleSubmit}>
           <input placeholder='Fullerton' name='City' defaultValue='Fullerton' />
           <button type='Submit'>Get Weather</button>
         </form>
 
-      </header>
-      <div className="datagrid-container">
+        <Stack spacing={1}>
+            <h3>{weatherTemp}</h3>
+            <p>{weatherLocation}</p>
+            <p>{weatherDate}</p>
+        </Stack>
+  
         <ThemeProvider theme={darkTheme}>
-          <div style={{ height: 300, width: '100%' }}>
+          <div style={{ height: 300, width: '70%' }}>
             <DataGrid
               rows={weatherData.map((row, index) => ({ id: index, ...row }))}
               columns={[
@@ -89,7 +101,7 @@ function App() {
             />
           </div>
         </ThemeProvider>
-      </div>
+      </header>
     </div>
   );
 }
