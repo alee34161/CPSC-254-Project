@@ -9,6 +9,9 @@ import { DataGrid } from '@mui/x-data-grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
+import TextField from '@mui/material/TextField'
+import Box from '@mui/material/Box'
+
 import './App.css';
 
 // Theme for table
@@ -132,18 +135,38 @@ function App() {
         {/*City name text entry*/}
         <div style={{padding: 10}}>
         <form onSubmit={handleSubmit}>
+          <TextField
+            label='City'
+            placeholder='Fullerton'
+            variant='outlined'
+            defaultValue='Fullerton'
+            name='City'
+            color='secondary'
+            InputProps={{
+              style: {color: 'white'},
+            }}
+            InputLabelProps={{
+              style: {color: 'white' },
+            }}
+          />
+          <Button type='submit' variant='contained'>Get Weather</Button>
           <input placeholder='Fullerton' name='City' defaultValue='Fullerton' />
           <button type='Submit'>Get Weather</button>
         </form>
         </div>
 
         {/*Clear Entries Button*/}
-        <div style={{padding: 10}}>
+        <div style={{
+          paddingTop: 10, 
+          display: "grid", 
+          gridTemplateColumns: "1fr 1fr",
+          placeItems: "center"}}>
+        <h3>History</h3>
         <strong>
             <Button
                 variant="contained"
                 size="small"
-                style={{ marginLeft: 16, backgroundColor: "#FF5733" }}
+                style={{backgroundColor: "#FF5733" }}
                 onClick={() => {
                   onClearClick()
                   setWeatherTemp("")
@@ -155,12 +178,9 @@ function App() {
             </Button>
         </strong>
         </div>
-
-        <h3>History</h3>
-  
         {/*Weather Request History Table*/}
         <ThemeProvider theme={darkTheme}>
-          <div style={{ height: 300, width: '70%', padding: 10 }}>
+          <div style={{ height: 300, width: '70%'}}>
             <DataGrid
               rows={weatherData.map((row, index) => ({...row }))}
               columns={[
