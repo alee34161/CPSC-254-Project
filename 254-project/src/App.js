@@ -4,6 +4,7 @@ import moment from 'moment';
 import { DataGrid } from '@mui/x-data-grid';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Stack from '@mui/material/Stack'
+import Button from '@mui/material/Button'
 import './App.css';
 
 const darkTheme = createTheme({
@@ -18,7 +19,6 @@ function App() {
   const [weatherTemp, setWeatherTemp] = useState([]);
   const [weatherLocation, setWeatherLocation] = useState([]);
   const [weatherDate, setWeatherDate] = useState([]);
-
   const [weatherData, setWeatherData] = useState([]);
 
   useEffect(() => {
@@ -30,6 +30,40 @@ function App() {
         console.error('Error fetching data:', error);
       });
   }, []);
+
+  const renderDeleteButton = (params) => {
+    return (
+        <strong>
+            <Button
+                variant="contained"
+                size="small"
+                style={{backgroundColor: "#FF5733" }}
+                onClick={() => {
+                  const currentRow = params.row.id;
+                  axios.post('http://localhost:8080/delete', {id: currentRow})
+                  .then((response) => {
+                    axios.post('http://localhost:8080/show')
+                    .then((response) => {
+                      setWeatherData(response.data);
+                    })
+                  })
+                }}
+            >
+                Remove
+            </Button>
+        </strong>
+    )
+  }
+
+  const onClearClick = () => {
+    axios.post('http://localhost:8080/clear')
+    .then((response) => {
+      axios.post('http://localhost:8080/show')
+      .then((response) => {
+        setWeatherData(response.data);
+      })
+    })
+  }
 
   const handleSubmit = e => {
     e.preventDefault();
@@ -55,13 +89,13 @@ function App() {
         axios.post('http://localhost:8080/add', {location: location, temp: temp, date: date})
         .then((response) => {
           console.log(response);
-        })
-        axios.post('http://localhost:8080/show')
-        .then((response) => {
-          setWeatherData(response.data);
-          setWeatherTemp(temp);
-          setWeatherLocation(location);
-          setWeatherDate(date);
+          axios.post('http://localhost:8080/show')
+          .then((response) => {
+            setWeatherData(response.data);
+            setWeatherTemp(temp);
+            setWeatherLocation(location);
+            setWeatherDate(date);
+          })
         })
       })
       .catch((error) => {
@@ -74,26 +108,47 @@ function App() {
       <header className="App-header">
         <h1>Simple Weather App</h1>
 
+        <div style={{padding: 10}}>
         <form onSubmit={handleSubmit}>
           <input placeholder='Fullerton' name='City' defaultValue='Fullerton' />
           <button type='Submit'>Get Weather</button>
         </form>
+        </div>
 
         <Stack spacing={1}>
             <h3>{weatherTemp}</h3>
             <p>{weatherLocation}</p>
             <p>{weatherDate}</p>
         </Stack>
+
+        <div style={{padding: 10}}>
+        <strong>
+            <Button
+                variant="contained"
+                size="small"
+                style={{ marginLeft: 16, backgroundColor: "#FF5733" }}
+                onClick={() => {
+                  onClearClick()
+                  setWeatherTemp("")
+                  setWeatherLocation("")
+                  setWeatherDate("")
+                }}
+            >
+                Clear Entries
+            </Button>
+        </strong>
+        </div>
   
         <ThemeProvider theme={darkTheme}>
-          <div style={{ height: 300, width: '70%' }}>
+          <div style={{ height: 300, width: '70%', padding: 10 }}>
             <DataGrid
-              rows={weatherData.map((row, index) => ({ id: index, ...row }))}
+              rows={weatherData.map((row, index) => ({...row }))}
               columns={[
                 { field: 'id', headerName: 'ID', width: 70 },
                 { field: 'Location', headerName: 'Location', width: 200 },
                 { field: 'Temperature', headerName: 'Temperature', width: 150 },
                 { field: 'Date', headerName: 'Date', width: 200 },
+                { field: 'Remove', headerName: 'Remove', width: 150, renderCell: renderDeleteButton}
               ]}
               pageSize={5}
               rowsPerPageOptions={[5, 10, 20]}
