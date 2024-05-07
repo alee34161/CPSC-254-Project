@@ -5,19 +5,17 @@ import axios from 'axios';
 import moment from 'moment';
 
 // Material UI Imports
-import { DataGrid } from '@mui/x-data-grid';
-
-import * as mui from '@mui/material'
-
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Stack from '@mui/material/Stack'
-import Button from '@mui/material/Button'
-import TextField from '@mui/material/TextField'
-import Typography from '@mui/material/Typography'
-import Box from '@mui/material/Box'
-import Card from '@mui/material/Card'
-import CardActions from '@mui/material/CardActions'
-import CardContent from '@mui/material/CardContent'
+import { DataGrid } from '@mui/x-data-grid';
+import {
+  Stack,
+  Button,
+  TextField,
+  Typography,
+  Box,
+  Card,
+  CardContent
+} from '@mui/material'
 
 import './App.css';
 
@@ -75,6 +73,7 @@ function App() {
     )
   }
 
+  // Current Requested Weather Display
   const weatherCard = (
     <React.Fragment>
       <CardContent>
@@ -84,7 +83,7 @@ function App() {
         <Typography variant="h4" component="div">
           {weatherTemp}
         </Typography>
-        <Typography sx={{ fontSize: 10}} gutterBottom>
+        <Typography sx={{ fontSize: 10}}>
           {weatherDate}
         </Typography>
       </CardContent>
@@ -148,11 +147,11 @@ function App() {
         {/*App Title*/}
         <h1>Simple Weather App</h1>
 
-        <Box sx={{minWidth: 275}}>
-          {weatherData && (
+        {/*Currently Requested Weather*/}
+        <Box sx={{minWidth: 275, marginBottom: 0}}>
+          {weatherData.length > 0 && (
           <Card sx={{
-            backgroundColor: 'transparent',
-            //boxShadow: 'none',
+            backgroundColor: '#3b3b3b',
             color: 'white'}}>
             {weatherCard}
             </Card>
@@ -160,7 +159,7 @@ function App() {
         </Box>
 
         {/*City name text entry*/}
-        <div style={{paddingTop: 10}}>
+        <div style={{paddingTop: 20}}>
         <form onSubmit={handleSubmit}>
           <TextField
             label='City'
