@@ -6,11 +6,18 @@ import moment from 'moment';
 
 // Material UI Imports
 import { DataGrid } from '@mui/x-data-grid';
+
+import * as mui from '@mui/material'
+
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Stack from '@mui/material/Stack'
 import Button from '@mui/material/Button'
 import TextField from '@mui/material/TextField'
+import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
+import Card from '@mui/material/Card'
+import CardActions from '@mui/material/CardActions'
+import CardContent from '@mui/material/CardContent'
 
 import './App.css';
 
@@ -67,6 +74,22 @@ function App() {
         </strong>
     )
   }
+
+  const weatherCard = (
+    <React.Fragment>
+      <CardContent>
+        <Typography sx={{ fontSize: 14}} gutterBottom>
+          {weatherLocation}
+        </Typography>
+        <Typography variant="h4" component="div">
+          {weatherTemp}
+        </Typography>
+        <Typography sx={{ fontSize: 10}} gutterBottom>
+          {weatherDate}
+        </Typography>
+      </CardContent>
+    </React.Fragment>
+  )
 
   // Clear table entries
   const onClearClick = () => {
@@ -125,15 +148,19 @@ function App() {
         {/*App Title*/}
         <h1>Simple Weather App</h1>
 
-        {/*Requested Weather Info*/}
-        <Stack spacing={1}>
-            <h3>{weatherTemp}</h3>
-            <p>{weatherLocation}</p>
-            <p>{weatherDate}</p>
-        </Stack>
+        <Box sx={{minWidth: 275}}>
+          {weatherData && (
+          <Card sx={{
+            backgroundColor: 'transparent',
+            //boxShadow: 'none',
+            color: 'white'}}>
+            {weatherCard}
+            </Card>
+          )}
+        </Box>
 
         {/*City name text entry*/}
-        <div style={{padding: 10}}>
+        <div style={{paddingTop: 10}}>
         <form onSubmit={handleSubmit}>
           <TextField
             label='City'
@@ -141,7 +168,8 @@ function App() {
             variant='outlined'
             defaultValue='Fullerton'
             name='City'
-            color='secondary'
+            size='small'
+            color='primary'
             InputProps={{
               style: {color: 'white'},
             }}
@@ -149,15 +177,12 @@ function App() {
               style: {color: 'white' },
             }}
           />
-          <Button type='submit' variant='contained'>Get Weather</Button>
-          <input placeholder='Fullerton' name='City' defaultValue='Fullerton' />
-          <button type='Submit'>Get Weather</button>
+          <Button type='submit' variant='contained' sx={{mt: 0.2, ml: 1}}>Get Weather</Button>
         </form>
         </div>
 
         {/*Clear Entries Button*/}
         <div style={{
-          paddingTop: 10, 
           display: "grid", 
           gridTemplateColumns: "1fr 1fr",
           placeItems: "center"}}>
@@ -196,6 +221,7 @@ function App() {
             />
           </div>
         </ThemeProvider>
+        <div style={{ height: 100 }}> </div>
       </header>
     </div>
   );
