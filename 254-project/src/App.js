@@ -1,12 +1,25 @@
 import React, { useState, useEffect } from 'react';
+
+// Library Imports
 import axios from 'axios';
 import moment from 'moment';
-import { DataGrid } from '@mui/x-data-grid';
+
+// Material UI Imports
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import Stack from '@mui/material/Stack'
-import Button from '@mui/material/Button'
+import { DataGrid } from '@mui/x-data-grid';
+import {
+  Stack,
+  Button,
+  TextField,
+  Typography,
+  Box,
+  Card,
+  CardContent
+} from '@mui/material'
+
 import './App.css';
 
+// Theme for table
 const darkTheme = createTheme({
   palette: {
     mode: 'dark',
@@ -16,10 +29,14 @@ const darkTheme = createTheme({
 const weatherKey = '01d6a2b501df4c29a61224906242304';
 
 function App() {
+
+  // State variable for table data
+  const [weatherData, setWeatherData] = useState([]);
+
+  // State variables for current request
   const [weatherTemp, setWeatherTemp] = useState([]);
   const [weatherLocation, setWeatherLocation] = useState([]);
   const [weatherDate, setWeatherDate] = useState([]);
-  const [weatherData, setWeatherData] = useState([]);
 
   useEffect(() => {
     axios.get('http://localhost:8080/show')
@@ -31,6 +48,7 @@ function App() {
       });
   }, []);
 
+  // Render delete button in table cells
   const renderDeleteButton = (params) => {
     return (
         <strong>
@@ -55,6 +73,24 @@ function App() {
     )
   }
 
+  // Current Requested Weather Display
+  const weatherCard = (
+    <React.Fragment>
+      <CardContent>
+        <Typography sx={{ fontSize: 14}} gutterBottom>
+          {weatherLocation}
+        </Typography>
+        <Typography variant="h4" component="div">
+          {weatherTemp}
+        </Typography>
+        <Typography sx={{ fontSize: 10}}>
+          {weatherDate}
+        </Typography>
+      </CardContent>
+    </React.Fragment>
+  )
+
+  // Clear table entries
   const onClearClick = () => {
     axios.post('http://localhost:8080/clear')
     .then((response) => {
@@ -65,6 +101,7 @@ function App() {
     })
   }
 
+  // Submit button handler
   const handleSubmit = e => {
     e.preventDefault();
 
@@ -106,27 +143,54 @@ function App() {
   return (
     <div className="App">
       <header className="App-header">
+
+        {/*App Title*/}
         <h1>Simple Weather App</h1>
 
-        <div style={{padding: 10}}>
+        {/*Currently Requested Weather*/}
+        <Box sx={{minWidth: 275, marginBottom: 0}}>
+          {weatherData.length > 0 && (
+          <Card sx={{
+            backgroundColor: '#3b3b3b',
+            color: 'white'}}>
+            {weatherCard}
+            </Card>
+          )}
+        </Box>
+
+        {/*City name text entry*/}
+        <div style={{paddingTop: 20}}>
         <form onSubmit={handleSubmit}>
-          <input placeholder='Fullerton' name='City' defaultValue='Fullerton' />
-          <button type='Submit'>Get Weather</button>
+          <TextField
+            label='City'
+            placeholder='Fullerton'
+            variant='outlined'
+            defaultValue='Fullerton'
+            name='City'
+            size='small'
+            color='primary'
+            InputProps={{
+              style: {color: 'white'},
+            }}
+            InputLabelProps={{
+              style: {color: 'white' },
+            }}
+          />
+          <Button type='submit' variant='contained' sx={{mt: 0.2, ml: 1}}>Get Weather</Button>
         </form>
         </div>
 
-        <Stack spacing={1}>
-            <h3>{weatherTemp}</h3>
-            <p>{weatherLocation}</p>
-            <p>{weatherDate}</p>
-        </Stack>
-
-        <div style={{padding: 10}}>
+        {/*Clear Entries Button*/}
+        <div style={{
+          display: "grid", 
+          gridTemplateColumns: "1fr 1fr",
+          placeItems: "center"}}>
+        <h3>History</h3>
         <strong>
             <Button
                 variant="contained"
                 size="small"
-                style={{ marginLeft: 16, backgroundColor: "#FF5733" }}
+                style={{backgroundColor: "#FF5733" }}
                 onClick={() => {
                   onClearClick()
                   setWeatherTemp("")
@@ -138,9 +202,9 @@ function App() {
             </Button>
         </strong>
         </div>
-  
+        {/*Weather Request History Table*/}
         <ThemeProvider theme={darkTheme}>
-          <div style={{ height: 300, width: '70%', padding: 10 }}>
+          <div style={{ height: 300, width: '70%'}}>
             <DataGrid
               rows={weatherData.map((row, index) => ({...row }))}
               columns={[
@@ -156,6 +220,7 @@ function App() {
             />
           </div>
         </ThemeProvider>
+        <div style={{ height: 100 }}> </div>
       </header>
     </div>
   );
