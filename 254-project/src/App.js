@@ -145,7 +145,7 @@ function App() {
       <header className="App-header">
 
         {/*App Title*/}
-        <h1>Simple Weather App</h1>
+        <h1>SimpleWeather</h1>
 
         {/*Currently Requested Weather*/}
         <Box sx={{minWidth: 275, marginBottom: 0}}>
